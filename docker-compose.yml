@@ -1,0 +1,80 @@
+version: "3.9"
+
+networks:
+  odooNetwork:
+    driver: bridge
+
+volumes:
+  db-data:
+  odoo-data:
+  nginx-cache:
+  certbot-www:
+  letsencrypt:
+
+services:
+  postgresql:
+    container_name: postgresql
+    image: postgres:${DB_VERSION}
+    # restart: unless-stopped
+    networks: [odooNetwork]
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PWD}
+      POSTGRES_DB: postgres
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    # restart: unless-stopped
+    networks: [odooNetwork]
+    command: ["redis-server","--save","","--appendonly","no"]
+
+  odoo:
+    image: odoo:${ODOO_VERSION}
+    # restart: unless-stopped
+    depends_on:
+      - postgresql
+      - redis
+    networks: [odooNetwork]
+    ports:
+      - 8069:8069
+
+    environment:
+    - HOST=postgresql
+    - PORT=5432
+    - USER=${DB_USER}
+    - PASSWORD=${DB_PWD}
+
+
+    volumes:
+      - ./odoo-data:/var/lib/odoo
+      # - odoo-data:/var/lib/odoo
+      - ./odoo.conf:/etc/odoo/odoo.conf:ro
+      # - ./enterprise:/mnt/enterprise:ro
+      # - ./extra-addons:/mnt/extra-addons:ro
+
+  nginx:
+    image: nginx:alpine
+    # restart: unless-stopped
+    depends_on:
+      - odoo
+    networks: [odooNetwork]
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - nginx-cache:/var/cache/nginx
+      # - ./nginx.html:/usr/share/nginx/html
+      # - /etc/letsencrypt:/etc/letsencrypt:ro
+    ports:
+      - "80:80"
+      - "443:443"
+
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - certbot-www: /var/www/certbot
+      - letsencrypt: /etc/letsencrypt
+    entrypoint: sh
+    command: -c "echo ready"
+    
+
