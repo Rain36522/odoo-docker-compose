@@ -54,8 +54,11 @@ services:
         # providers
         - --providers.file.directory=/etc/traefik/dynamic
         - --providers.file.watch=true
-        # entrypoints: LAN=443  /  WAN=8443
+        # Redirection http to https
         - --entrypoints.http.address=:80
+        - --entrypoints.http.http.redirections.entrypoint.to=lan
+        - --entrypoints.http.http.redirections.entrypoint.scheme=https
+        # entrypoints: LAN=443  /  WAN=8443
         - --entrypoints.lan.address=:443
         - --entrypoints.wan.address=:8443
         - --log.level=INFO
