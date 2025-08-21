@@ -68,6 +68,7 @@ services:
         # (optionnel) staging pour tests:
         # - --certificatesresolvers.le-dns.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
       ports:
+        - "80:80"
         - "443:443"     # LAN direct
         - "8443:8443"   # WAN via box 443->8443
         # si tu choisis ACME HTTP-01 à la place de DNS-01, ajoute:
