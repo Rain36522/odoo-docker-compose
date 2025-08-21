@@ -5,9 +5,7 @@ networks:
 volumes:
   db-data:
   odoo-data:
-  nginx-cache:
-  certbot-www:
-  letsencrypt:
+  traefik_acme:
 
 services:
   postgresql:
@@ -35,9 +33,6 @@ services:
       - postgresql
       - redis
     networks: [odooNetwork]
-    ports:
-      - 8069:8069
-
     environment:
     - HOST=postgresql
     - PORT=5432
@@ -52,27 +47,36 @@ services:
       # - ./enterprise:/mnt/enterprise:ro
       # - ./extra-addons:/mnt/extra-addons:ro
 
-  nginx:
-    image: nginx:alpine
-    # restart: unless-stopped
-    depends_on:
-      - odoo
-    networks: [odooNetwork]
-    volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
-      - nginx-cache:/var/cache/nginx
-      # - ./nginx.html:/usr/share/nginx/html
-      # - /etc/letsencrypt:/etc/letsencrypt:ro
-    ports:
-      - "80:80"
-      - "443:443"
-
-  # certbot:
-  #   image: certbot/certbot:latest
-  #   volumes:
-  #     - certbot-www: /var/www/certbot
-  #     - letsencrypt: /etc/letsencrypt
-  #   entrypoint: sh
-  #   command: -c "echo ready"
-    
-
+  traefik:
+      image: traefik:v3.1
+      container_name: traefik
+      command:
+        # providers
+        - --providers.file.directory=/etc/traefik/dynamic
+        - --providers.file.watch=true
+        # entrypoints: LAN=443  /  WAN=8443
+        - --entrypoints.lan.address=:443
+        - --entrypoints.wan.address=:8443
+        - --log.level=DEBUG
+        - --accesslog=true
+        # ACME (DNS-01) -> décommente et adapte si tu veux l’externe maintenant
+        # - --certificatesresolvers.le-dns.acme.email=admin@udryconstruction.ch
+        # - --certificatesresolvers.le-dns.acme.storage=/acme/acme.json
+        # - --certificatesresolvers.le-dns.acme.dnschallenge.provider=cloudflare
+        # - --certificatesresolvers.le-dns.acme.dnschallenge.delaybeforecheck=5
+        # (optionnel) staging pour tests:
+        # - --certificatesresolvers.le-dns.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
+      ports:
+        - "443:443"     # LAN direct
+        - "8443:8443"   # WAN via box 443->8443
+        # si tu choisis ACME HTTP-01 à la place de DNS-01, ajoute:
+        # - "80:80"
+      # environment:
+        # pour DNS-01 (ex Cloudflare) – si tu l’utilises
+        # CF_DNS_API_TOKEN: "${CF_DNS_API_TOKEN}"
+      volumes:
+        - ./traefik/dynamic:/etc/traefik/dynamic:ro
+        - traefik_acme:/acme
+      networks:
+        - odooNetwork
+      restart: unless-stopped
