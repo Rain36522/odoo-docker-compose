@@ -55,9 +55,10 @@ services:
         - --providers.file.directory=/etc/traefik/dynamic
         - --providers.file.watch=true
         # entrypoints: LAN=443  /  WAN=8443
+        - --entrypoints.http.address=:80
         - --entrypoints.lan.address=:443
         - --entrypoints.wan.address=:8443
-        - --log.level=DEBUG
+        - --log.level=INFO
         - --accesslog=true
         # ACME (DNS-01) -> décommente et adapte si tu veux l’externe maintenant
         # - --certificatesresolvers.le-dns.acme.email=admin@udryconstruction.ch

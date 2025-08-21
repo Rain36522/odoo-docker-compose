@@ -1,0 +1,21 @@
+http:
+  routers:
+    redirect-to-https:
+      entryPoints:
+        - http
+      rule: "HostRegexp(`{any:.+}`)"
+      middlewares:
+        - https-redirect
+      service: dummy
+
+  middlewares:
+    https-redirect:
+      redirectScheme:
+        scheme: https
+        permanent: true
+
+  services:
+    dummy:
+      loadBalancer:
+        servers:
+          - url: "http://0.0.0.0"
