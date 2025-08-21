@@ -69,12 +69,12 @@ services:
       - "80:80"
       - "443:443"
 
-  certbot:
-    image: certbot/certbot:latest
-    volumes:
-      - certbot-www: /var/www/certbot
-      - letsencrypt: /etc/letsencrypt
-    entrypoint: sh
-    command: -c "echo ready"
+  # certbot:
+  #   image: certbot/certbot:latest
+  #   volumes:
+  #     - certbot-www: /var/www/certbot
+  #     - letsencrypt: /etc/letsencrypt
+  #   entrypoint: sh
+  #   command: -c "echo ready"
     
 
