@@ -61,7 +61,7 @@ services:
         # entrypoints: LAN=443  /  WAN=8443
         - --entrypoints.lan.address=:443
         - --entrypoints.wan.address=:8443
-        - --log.level=INFO
+        - --log.level=WARN
         - --accesslog=true
         # ACME (DNS-01) -> décommente et adapte si tu veux l’externe maintenant
         # - --certificatesresolvers.le-dns.acme.email=admin@udryconstruction.ch
