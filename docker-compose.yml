@@ -1,5 +1,3 @@
-version: "3.9"
-
 networks:
   odooNetwork:
     driver: bridge
@@ -46,7 +44,7 @@ services:
     - USER=${DB_USER}
     - PASSWORD=${DB_PWD}
 
-
+    user: "100:101"
     volumes:
       - ./odoo-data:/var/lib/odoo
       # - odoo-data:/var/lib/odoo
