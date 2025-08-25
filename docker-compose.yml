@@ -64,10 +64,9 @@ services:
       - "--certificatesresolvers.le-dns.acme.email=info@udrytech.ch"
       - "--certificatesresolvers.le-dns.acme.storage=/acme/acme.json"
       - "--certificatesresolvers.le-dns.acme.dnschallenge.provider=infomaniak"
-      - "--certificatesresolvers.le-dns.acme.dnschallenge.delaybeforecheck=0"
       - "--certificatesresolvers.myresolver.acme.dnschallenge=true"
-      - "--certificatesresolvers.myresolver.acme.dnschallenge.provider=infomaniak"
-      - "--certificatesresolvers.myresolver.acme.dnschallenge.delaybeforecheck=30"
+      - "--certificatesresolvers.le-dns.acme.dnschallenge.propagation.delaybeforechecks=0s"
+      - "--certificatesresolvers.myresolver.acme.dnschallenge.propagation.delaybeforechecks=30s"
     networks:
       - odooNetwork
     ports:
