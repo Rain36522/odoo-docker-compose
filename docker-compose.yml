@@ -52,6 +52,9 @@ services:
     environment:
       - INFOMANIAK_ACCESS_TOKEN=${INFOMANIAK_ACCESS_TOKEN}
     command:
+      - --log.level=INFO
+      - --accesslog=true
+
       - "--entrypoints.lan.address=:443"            # 443 interne Traefik (LAN)
       - "--entrypoints.wan.address=:8443"           # 8443 interne Traefik (WAN)
       - "--providers.file.directory=/etc/traefik/dynamic"
