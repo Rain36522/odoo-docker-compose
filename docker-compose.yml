@@ -48,7 +48,7 @@ services:
       # - ./extra-addons:/mnt/extra-addons:ro
 
   traefik:
-      image: traefik:v3.1
+      image: traefik:v3.5
       container_name: traefik
       command:
         # providers
