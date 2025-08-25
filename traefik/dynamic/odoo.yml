@@ -7,7 +7,7 @@ http:
       service: odoo-svc
       tls:
         # utiliser Let’s Encrypt si activé (DNS-01 ou HTTP-01)
-        # certResolver: le-dns
+        certResolver: le-dns
         # si tu veux un cert interne pour le LAN, vois section TLS plus bas
         {}
 
@@ -17,13 +17,14 @@ http:
       entryPoints: [wan]
       service: odoo-lp
       tls:
-        # certResolver: le-dns
+        certResolver: le-dns
         {}
     odoo-wan-login:
       rule: Host(`odoo.udrytech.ch`) && PathPrefix(`/web/login`)
       entryPoints: [wan]
       service: odoo-svc
-      tls: {}
+      tls: 
+        certResolver: le-dns
       middlewares:
         - wan-ratelimit
         - wan-sec-headers
