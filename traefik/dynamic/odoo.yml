@@ -2,7 +2,7 @@ http:
   routers:
     # LAN complet sur 443
     odoo-lan:
-      rule: Host(`odoo.udryconstruction.ch`)
+      rule: Host(`odoo.udrytech.ch`)
       entryPoints: [lan]
       service: odoo-svc
       tls:
@@ -13,14 +13,14 @@ http:
 
     # WAN limité sur 8443 (expose seulement /longpolling et /web/login)
     odoo-wan-lp:
-      rule: Host(`odoo.udryconstruction.ch`) && PathPrefix(`/longpolling`)
+      rule: Host(`odoo.udrytech.ch`) && PathPrefix(`/longpolling`)
       entryPoints: [wan]
       service: odoo-lp
       tls:
         # certResolver: le-dns
         {}
     odoo-wan-login:
-      rule: Host(`odoo.udryconstruction.ch`) && PathPrefix(`/web/login`)
+      rule: Host(`odoo.udrytech.ch`) && PathPrefix(`/web/login`)
       entryPoints: [wan]
       service: odoo-svc
       tls: {}

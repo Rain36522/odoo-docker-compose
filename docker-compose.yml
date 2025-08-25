@@ -51,7 +51,6 @@ services:
     image: traefik:v3.5
     environment:
       - INFOMANIAK_ACCESS_TOKEN=${INFOMANIAK_ACCESS_TOKEN}
-      # ou: INFOMANIAK_ACCESS_TOKEN_FILE=/run/secrets/ik_token
     command:
       - "--entrypoints.lan.address=:443"            # 443 interne Traefik (LAN)
       - "--entrypoints.wan.address=:8443"           # 8443 interne Traefik (WAN)
