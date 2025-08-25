@@ -52,7 +52,6 @@ services:
     environment:
       - INFOMANIAK_ACCESS_TOKEN=${INFOMANIAK_ACCESS_TOKEN}
     command:
-      - --echo ${INFOMANIAK_ACCESS_TOKEN}
       - --log.level=DEBUG
       - --accesslog=true
 
