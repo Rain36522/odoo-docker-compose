@@ -48,40 +48,25 @@ services:
       # - ./extra-addons:/mnt/extra-addons:ro
 
   traefik:
-      image: traefik:v3.5
-      container_name: traefik
-      command:
-        # providers
-        - --providers.file.directory=/etc/traefik/dynamic
-        - --providers.file.watch=true
-        # Redirection http to https
-        - --entrypoints.http.address=:80
-        - --entrypoints.http.http.redirections.entrypoint.to=lan
-        - --entrypoints.http.http.redirections.entrypoint.scheme=https
-        # entrypoints: LAN=443  /  WAN=8443
-        - --entrypoints.lan.address=:443
-        - --entrypoints.wan.address=:8443
-        - --log.level=WARN
-        - --accesslog=true
-        # ACME (DNS-01) -> décommente et adapte si tu veux l’externe maintenant
-        # - --certificatesresolvers.le-dns.acme.email=admin@udryconstruction.ch
-        # - --certificatesresolvers.le-dns.acme.storage=/acme/acme.json
-        # - --certificatesresolvers.le-dns.acme.dnschallenge.provider=cloudflare
-        # - --certificatesresolvers.le-dns.acme.dnschallenge.delaybeforecheck=5
-        # (optionnel) staging pour tests:
-        # - --certificatesresolvers.le-dns.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
-      ports:
-        - "80:80"
-        - "443:443"     # LAN direct
-        - "8443:8443"   # WAN via box 443->8443
-        # si tu choisis ACME HTTP-01 à la place de DNS-01, ajoute:
-        # - "80:80"
-      # environment:
-        # pour DNS-01 (ex Cloudflare) – si tu l’utilises
-        # CF_DNS_API_TOKEN: "${CF_DNS_API_TOKEN}"
-      volumes:
-        - ./traefik/dynamic:/etc/traefik/dynamic:ro
-        - traefik_acme:/acme
-      networks:
-        - odooNetwork
-      restart: unless-stopped
+    image: traefik:v3.5
+    environment:
+      - INFOMANIAK_ACCESS_TOKEN=${INFOMANIAK_ACCESS_TOKEN}
+      # ou: INFOMANIAK_ACCESS_TOKEN_FILE=/run/secrets/ik_token
+    command:
+      - "--entrypoints.lan.address=:443"            # 443 interne Traefik (LAN)
+      - "--entrypoints.wan.address=:8443"           # 8443 interne Traefik (WAN)
+      - "--providers.file.directory=/etc/traefik/dynamic"
+      - "--providers.file.watch=true"
+
+      # --- ACME / Let's Encrypt via DNS-01 (Infomaniak)
+      - "--certificatesresolvers.le-dns.acme.email=info@udrytech.ch"
+      - "--certificatesresolvers.le-dns.acme.storage=/acme/acme.json"
+      - "--certificatesresolvers.le-dns.acme.dnschallenge.provider=infomaniak"
+      - "--certificatesresolvers.le-dns.acme.dnschallenge.delaybeforecheck=0"
+    ports:
+      - "443:443"          # accès LAN direct
+      - "8443:8443"        # routeur 443 -> hôte 8443 -> Traefik:8443
+    volumes:
+      - ./traefik/dynamic:/etc/traefik/dynamic:ro
+      - ./traefik/acme:/acme
+    restart: unless-stopped
