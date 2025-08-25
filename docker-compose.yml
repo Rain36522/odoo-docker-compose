@@ -62,6 +62,8 @@ services:
       - "--certificatesresolvers.le-dns.acme.storage=/acme/acme.json"
       - "--certificatesresolvers.le-dns.acme.dnschallenge.provider=infomaniak"
       - "--certificatesresolvers.le-dns.acme.dnschallenge.delaybeforecheck=0"
+    networks:
+      - odooNetwork
     ports:
       - "443:443"          # accès LAN direct
       - "8443:8443"        # routeur 443 -> hôte 8443 -> Traefik:8443
