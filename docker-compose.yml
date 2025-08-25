@@ -63,6 +63,8 @@ services:
       - "--certificatesresolvers.le-dns.acme.dnschallenge.provider=infomaniak"
       - "--certificatesresolvers.le-dns.acme.dnschallenge.delaybeforecheck=0"
       - "--certificatesresolvers.myresolver.acme.dnschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.dnschallenge.provider=infomaniak"
+      - "--certificatesresolvers.myresolver.acme.dnschallenge.delaybeforecheck=30"
     networks:
       - odooNetwork
     ports:
