@@ -62,6 +62,7 @@ services:
       - "--certificatesresolvers.le-dns.acme.storage=/acme/acme.json"
       - "--certificatesresolvers.le-dns.acme.dnschallenge.provider=infomaniak"
       - "--certificatesresolvers.le-dns.acme.dnschallenge.delaybeforecheck=0"
+      - "--certificatesresolvers.myresolver.acme.dnschallenge=true"
     networks:
       - odooNetwork
     ports:
