@@ -9,7 +9,6 @@ http:
         # utiliser Let’s Encrypt si activé (DNS-01 ou HTTP-01)
         certResolver: le-dns
         # si tu veux un cert interne pour le LAN, vois section TLS plus bas
-        {}
 
     # WAN limité sur 8443 (expose seulement /longpolling et /web/login)
     odoo-wan-lp:
@@ -18,7 +17,6 @@ http:
       service: odoo-lp
       tls:
         certResolver: le-dns
-        {}
     odoo-wan-login:
       rule: Host(`odoo.udrytech.ch`) && PathPrefix(`/web/login`)
       entryPoints: [wan]
